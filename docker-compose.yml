@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - ORIGIN=http://server:8080
+      - APP_ENV=development
+      - PORT=8080
+      - DB_USER=root
+      - DB_PASSWORD=1234
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3306
+      - DB_NAME=ant
+      - SALT=10
+      - SECRET_KEY=ant
+      - GOOGLE_CLIENT_ID=clientId
+      - GOOGLE_CLIENT_SECRET=clientSecret
+      - REDIRECT_URI=redirectUri
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./cmd:/cmd
+      - ./internal:/internal
+      - ./docs:/docs
+    restart: always

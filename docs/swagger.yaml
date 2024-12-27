@@ -1,0 +1,383 @@
+basePath: /
+definitions:
+  appError.ErrorResponse:
+    properties:
+      data:
+        type: string
+    type: object
+  domain.RepeatPeriod:
+    enum:
+    - None
+    - Daily
+    - Weekly
+    - Monthly
+    - Yearly
+    - Custom
+    type: string
+    x-enum-varnames:
+    - None
+    - Daily
+    - Weekly
+    - Monthly
+    - Yearly
+    - Custom
+  domain.TransactionType:
+    enum:
+    - Income
+    - Expense
+    - Transfer
+    type: string
+    x-enum-varnames:
+    - Income
+    - Expense
+    - Transfer
+  dto.AddAccountBookRequestBody:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreateTransactionRequest:
+    properties:
+      amount:
+        minimum: 0
+        type: integer
+      description:
+        type: string
+      periodEndOn:
+        type: string
+      periodStartOn:
+        type: string
+      repeatType:
+        allOf:
+        - $ref: '#/definitions/domain.RepeatPeriod'
+        enum:
+        - None
+        - Daily
+        - Weekly
+        - Monthly
+        - Yearly
+        - Custom
+      title:
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/domain.TransactionType'
+        enum:
+        - Income
+        - Expense
+        - Transfer
+    required:
+    - amount
+    - periodStartOn
+    - repeatType
+    - title
+    - type
+    type: object
+  dto.OauthRequestBody:
+    properties:
+      code:
+        type: string
+    required:
+    - code
+    type: object
+  dto.OauthResponse:
+    properties:
+      accessToken:
+        type: string
+      expiredAt:
+        type: string
+      sync:
+        type: boolean
+    type: object
+  dto.UpdateUserRequestBody:
+    properties:
+      name:
+        type: string
+    type: object
+  dto.UpdateUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact:
+    email: hch950627@naver.com
+    name: API Support
+  description: API Server for Banana Account Book
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Banana Account Book API
+  version: "1.0"
+paths:
+  /account-books:
+    post:
+      consumes:
+      - application/json
+      description: 로그인 한 사용자의 가계부를 생성한다.
+      parameters:
+      - description: Account Book details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddAccountBookRequestBody'
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 가계부 생성
+      tags:
+      - accountBooks
+  /account-books/:accountBookId/transactions:
+    post:
+      consumes:
+      - application/json
+      description: 거래내역을 생성한다.
+      parameters:
+      - description: Add Transaction information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionRequest'
+      - description: account book id
+        in: path
+        name: accountBookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user information
+          schema:
+            $ref: '#/definitions/dto.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 거래내역 생성
+      tags:
+      - transactions
+  /account-books/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 로그인 한 사용자의 가계부를 삭제한다.
+      parameters:
+      - description: Account Book ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": "success"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 가계부 삭제
+      tags:
+      - accountBooks
+  /account-books/{id}/accept:
+    post:
+      consumes:
+      - application/json
+      description: 가계부 초대를 수락한다.
+      parameters:
+      - description: Account Book ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data": "success"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 가계부 초대 수락
+      tags:
+      - accountBooks
+  /auth/{provider}:
+    get:
+      consumes:
+      - application/json
+      description: 각 provider에 의한 Oauth 링크 반환
+      parameters:
+      - description: Authentication provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved auth URL
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema: {}
+        "500":
+          description: Internal server error
+          schema: {}
+      summary: Get oauth link
+      tags:
+      - auth
+    post:
+      consumes:
+      - application/json
+      description: 각 provider에 의한 Oauth callback 로직
+      parameters:
+      - description: Authentication provider
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: Oauth code
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OauthRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved auth URL
+          schema:
+            $ref: '#/definitions/dto.OauthResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+      summary: oauth
+      tags:
+      - auth
+  /users:
+    patch:
+      consumes:
+      - application/json
+      description: 인증된 사용자의 정보를 업데이트한다.
+      parameters:
+      - description: Updated user information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated user information
+          schema:
+            $ref: '#/definitions/dto.UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/appError.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: 사용자 정보 업데이트
+      tags:
+      - users
+swagger: "2.0"

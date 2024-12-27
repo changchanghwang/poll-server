@@ -1,0 +1,582 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API Server for Banana Account Book",
+        "title": "Banana Account Book API",
+        "contact": {
+            "name": "API Support",
+            "email": "hch950627@naver.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/account-books": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "로그인 한 사용자의 가계부를 생성한다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "accountBooks"
+                ],
+                "summary": "가계부 생성",
+                "parameters": [
+                    {
+                        "description": "Account Book details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddAccountBookRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/account-books/:accountBookId/transactions": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "거래내역을 생성한다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transactions"
+                ],
+                "summary": "거래내역 생성",
+                "parameters": [
+                    {
+                        "description": "Add Transaction information",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateTransactionRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "account book id",
+                        "name": "accountBookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated user information",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/account-books/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "로그인 한 사용자의 가계부를 삭제한다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accountBooks"
+                ],
+                "summary": "가계부 삭제",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Account Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": \"success\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/account-books/{id}/accept": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "가계부 초대를 수락한다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accountBooks"
+                ],
+                "summary": "가계부 초대 수락",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Account Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\": \"success\"}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/{provider}": {
+            "get": {
+                "description": "각 provider에 의한 Oauth 링크 반환",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get oauth link",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved auth URL",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {}
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "각 provider에 의한 Oauth callback 로직",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "oauth",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authentication provider",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Oauth code",
+                        "name": "code",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OauthRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved auth URL",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OauthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "인증된 사용자의 정보를 업데이트한다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "사용자 정보 업데이트",
+                "parameters": [
+                    {
+                        "description": "Updated user information",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated user information",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/appError.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "appError.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RepeatPeriod": {
+            "type": "string",
+            "enum": [
+                "None",
+                "Daily",
+                "Weekly",
+                "Monthly",
+                "Yearly",
+                "Custom"
+            ],
+            "x-enum-varnames": [
+                "None",
+                "Daily",
+                "Weekly",
+                "Monthly",
+                "Yearly",
+                "Custom"
+            ]
+        },
+        "domain.TransactionType": {
+            "type": "string",
+            "enum": [
+                "Income",
+                "Expense",
+                "Transfer"
+            ],
+            "x-enum-varnames": [
+                "Income",
+                "Expense",
+                "Transfer"
+            ]
+        },
+        "dto.AddAccountBookRequestBody": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateTransactionRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "periodStartOn",
+                "repeatType",
+                "title",
+                "type"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "description": {
+                    "type": "string"
+                },
+                "periodEndOn": {
+                    "type": "string"
+                },
+                "periodStartOn": {
+                    "type": "string"
+                },
+                "repeatType": {
+                    "enum": [
+                        "None",
+                        "Daily",
+                        "Weekly",
+                        "Monthly",
+                        "Yearly",
+                        "Custom"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.RepeatPeriod"
+                        }
+                    ]
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [
+                        "Income",
+                        "Expense",
+                        "Transfer"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.TransactionType"
+                        }
+                    ]
+                }
+            }
+        },
+        "dto.OauthRequestBody": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.OauthResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "expiredAt": {
+                    "type": "string"
+                },
+                "sync": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.UpdateUserRequestBody": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
