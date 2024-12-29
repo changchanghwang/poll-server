@@ -5,15 +5,14 @@ import (
 	"gorm.io/gorm"
 	"poll.ant/internal/services/users/domain"
 	"poll.ant/internal/services/users/dto"
-	"poll.ant/internal/services/users/infrastructure"
 )
 
 type UserService struct {
-	userRepository infrastructure.UserRepository
+	userRepository domain.UserRepository
 	db             *gorm.DB
 }
 
-func NewUserService(userRepository infrastructure.UserRepository, db *gorm.DB) *UserService {
+func NewUserService(userRepository domain.UserRepository, db *gorm.DB) *UserService {
 	return &UserService{
 		userRepository: userRepository,
 		db:             db,

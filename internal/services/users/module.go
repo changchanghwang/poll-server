@@ -8,7 +8,7 @@ import (
 )
 
 var UserSet = wire.NewSet(
-	infrastructure.NewUserRepository,
+	infrastructure.New,
 	application.NewUserService,
 	presentation.NewUserController,
 )

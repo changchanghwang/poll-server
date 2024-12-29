@@ -1,9 +1,10 @@
 package presentation
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/gofiber/fiber/v2"
 	httpCode "poll.ant/internal/libs/http/http-code"
 	httpError "poll.ant/internal/libs/http/http-error"
+	httpResponse "poll.ant/internal/libs/http/http-response"
 	"poll.ant/internal/libs/validate"
 	"poll.ant/internal/services/users/application"
 	"poll.ant/internal/services/users/domain"
@@ -20,8 +21,8 @@ func NewUserController(userService *application.UserService) *UserController {
 	}
 }
 
-func (c *UserController) Route(r *echo.Group) {
-	r.PATCH("/", c.update)
+func (c *UserController) Route(r fiber.Router) {
+	r.Patch("/", c.update)
 }
 
 // @Summary 사용자 정보 업데이트
@@ -36,9 +37,9 @@ func (c *UserController) Route(r *echo.Group) {
 // @Failure 500 {object} httpError.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /users [patch]
-func (c *UserController) update(ctx echo.Context) error {
+func (c *UserController) update(ctx *fiber.Ctx) error {
 	// 1. ctx destructuring
-	user, ok := ctx.Get("user").(*domain.User)
+	user, ok := ctx.Locals("user").(*domain.User)
 	if !ok {
 		return httpError.New(httpCode.Unauthorized, "Unauthorized", "")
 	}
@@ -46,7 +47,7 @@ func (c *UserController) update(ctx echo.Context) error {
 	// 2. dto validation
 	var body dto.UpdateUserRequestBody
 
-	if err := ctx.Bind(&body); err != nil {
+	if err := ctx.BodyParser(&body); err != nil {
 		return httpError.New(httpCode.BadRequest, "Invalid request body", "")
 	}
 
@@ -60,5 +61,5 @@ func (c *UserController) update(ctx echo.Context) error {
 		return httpError.Wrap(err)
 	}
 
-	return ctx.JSON(httpCode.Ok.Code, result)
+	return ctx.Status(httpCode.Ok.Code).JSON(httpResponse.Response{Data: result})
 }

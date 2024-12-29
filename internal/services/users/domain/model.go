@@ -7,9 +7,17 @@ import (
 	httpError "poll.ant/internal/libs/http/http-error"
 )
 
+type ProviderType string
+
+const (
+	ProviderNAVER  ProviderType = "NAVER"
+	ProviderKAKAO  ProviderType = "KAKAO"
+	ProviderGOOGLE ProviderType = "GOOGLE"
+)
+
 type User struct {
 	ddd.SoftDeletableAggregate
-	Id         uuid.UUID `json:"id" gorm:"primaryKey; type:uuid"`
+	Id         uuid.UUID `json:"id" gorm:"primaryKey; type:varchar(36)"`
 	Email      string    `json:"email" gorm:"unique;type:varchar(50); not null;"`
 	Name       string    `json:"name" gorm:"type:varchar(50); not null;"`
 	Provider   string    `json:"provider" gorm:"type:varchar(50); not null;"`

@@ -8,7 +8,11 @@ package di
 
 import (
 	"poll.ant/internal/libs/db"
+	"poll.ant/internal/libs/oauth"
 	"poll.ant/internal/server"
+	application2 "poll.ant/internal/services/auth/application"
+	infrastructure2 "poll.ant/internal/services/auth/infrastructure"
+	presentation2 "poll.ant/internal/services/auth/presentation"
 	"poll.ant/internal/services/users/application"
 	"poll.ant/internal/services/users/infrastructure"
 	"poll.ant/internal/services/users/presentation"
@@ -19,9 +23,13 @@ import (
 func InitializeServer() (*server.Server, error) {
 	healthCheckHandler := server.NewHandler()
 	gormDB := db.InitDb()
-	userRepository := infrastructure.NewUserRepository(gormDB)
+	userRepository := infrastructure.New(gormDB)
 	userService := application.NewUserService(userRepository, gormDB)
 	userController := presentation.NewUserController(userService)
-	serverServer := server.NewServer(healthCheckHandler, userController)
+	refreshTokenRepository := infrastructure2.New(gormDB)
+	oAuthProvider := oauth.NewOAuthProvider()
+	authService := application2.NewAuthService(refreshTokenRepository, userRepository, oAuthProvider, gormDB)
+	authController := presentation2.NewAuthController(authService)
+	serverServer := server.NewServer(healthCheckHandler, userController, authController)
 	return serverServer, nil
 }

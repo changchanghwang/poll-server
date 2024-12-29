@@ -1,9 +1,6 @@
 package server
 
-import (
-	"github.com/labstack/echo/v4"
-	httpCode "poll.ant/internal/libs/http/http-code"
-)
+import "github.com/gofiber/fiber/v2"
 
 type HealthCheckHandler struct {
 }
@@ -12,6 +9,6 @@ func NewHandler() *HealthCheckHandler {
 	return &HealthCheckHandler{}
 }
 
-func (h *HealthCheckHandler) check(c echo.Context) error {
-	return c.String(httpCode.Ok.Code, "ok")
+func (h *HealthCheckHandler) check(c *fiber.Ctx) error {
+	return c.SendString("ok")
 }

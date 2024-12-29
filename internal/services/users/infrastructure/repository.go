@@ -10,17 +10,11 @@ import (
 	"poll.ant/internal/services/users/domain"
 )
 
-type UserRepository interface {
-	FindByEmail(db *gorm.DB, email string) (*domain.User, bool, error)
-	FindOneOrFail(db *gorm.DB, id uuid.UUID) (*domain.User, error)
-	Save(db *gorm.DB, user *domain.User) error
-}
-
 type UserRepositoryImpl struct {
 	manager *gorm.DB
 }
 
-func NewUserRepository(manager *gorm.DB) UserRepository {
+func New(manager *gorm.DB) domain.UserRepository {
 	return &UserRepositoryImpl{manager: manager}
 }
 

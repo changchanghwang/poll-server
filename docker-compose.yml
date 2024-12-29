@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      - ORIGIN=http://server:8080
+      - ORIGIN=http://localhost:8888
       - APP_ENV=development
       - PORT=8080
       - DB_USER=root
@@ -15,13 +15,15 @@ services:
       - DB_NAME=ant
       - SALT=10
       - SECRET_KEY=ant
-      - GOOGLE_CLIENT_ID=clientId
-      - GOOGLE_CLIENT_SECRET=clientSecret
-      - REDIRECT_URI=redirectUri
+      - GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET=GOOGLE_CLIENT_SECRET
+      - GOOGLE_REDIRECT_URI=GOOGLE_REDIRECT_URI
+      - ACCESS_TOKEN_EXPIRED_AFTER_HOUR=1
+      - REFRESH_TOKEN_EXPIRED_AFTER_HOUR=24
     ports:
       - "8080:8080"
     volumes:
-      - ./cmd:/cmd
-      - ./internal:/internal
-      - ./docs:/docs
+      - ./cmd:/server/cmd
+      - ./internal:/server/internal
+      - ./docs:/server/docs
     restart: always
